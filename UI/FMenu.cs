@@ -204,26 +204,11 @@ namespace FMenu.UI
                 GUI.Label(new Rect(235, 70, 200, 300), "Select an object and press X");
                 GUI.Label(new Rect(235, 85, 200, 300), "Selected object: " + BuildObject);
 
-                if (GUI.Button(new Rect(235f, (float)GetY(1), 190f, 30f), "Cube"))
-                {
-                    BuildObject = "Cube";
-                }
-                if (GUI.Button(new Rect(235f, (float)GetY(2), 190f, 30f), "Plane"))
-                {
-                    BuildObject = "Plane";
-                }
-                if (GUI.Button(new Rect(235f, (float)GetY(3), 190f, 30f), "Sphere"))
-                {
-                    BuildObject = "Sphere";
-                }
-                if (GUI.Button(new Rect(235f, (float)GetY(4), 190f, 30f), "Capsule"))
-                {
-                    BuildObject = "Capsule";
-                }
-                if (GUI.Button(new Rect(235f, (float)GetY(5), 190f, 30f), "Cylinder"))
-                {
-                    BuildObject = "Cylinder";
-                }
+                if (GUI.Button(new Rect(235f, (float)GetY(1), 190f, 30f), "Cube")) BuildObject = "Cube";
+                if (GUI.Button(new Rect(235f, (float)GetY(2), 190f, 30f), "Plane")) BuildObject = "Plane";
+                if (GUI.Button(new Rect(235f, (float)GetY(3), 190f, 30f), "Sphere")) BuildObject = "Sphere";
+                if (GUI.Button(new Rect(235f, (float)GetY(4), 190f, 30f), "Capsule")) BuildObject = "Capsule";
+                if (GUI.Button(new Rect(235f, (float)GetY(5), 190f, 30f), "Cylinder")) BuildObject = "Cylinder";
             }
 
             if (AboutToggle)
