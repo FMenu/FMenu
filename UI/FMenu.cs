@@ -1,4 +1,4 @@
-﻿using FMenu.Utils;
+using FMenu.Utils;
 using System;
 using System.Reflection;
 using System.Text;
@@ -8,6 +8,37 @@ using UnityEngine.InputSystem;
 
 namespace FMenu.UI
 {
+    class MenuSettings {
+        public string LanguageSelected { get; set; }
+        public string MenuVersion { get; set; }
+        public string[] Developers { get; set; }
+        public string[] BetaTesters { get; set; }
+
+        public MenuSettings()
+        {
+            this.LanguageSelected = "en-US";
+            this.MenuVersion = "0.1.7";
+            this.Developers = new string[3] { "Daanbreur", "Subzay", "StuX" };
+            this.BetaTesters = new string[3] { "RapierXbox", "Lautnix", "Keltusar" };
+        }
+    }
+
+    class MenuItem
+    {
+        public string Title { get; set; }
+        public bool Toggle { get; set; }
+
+        public MenuItem()
+        {
+        }
+
+        public MenuItem(string title)
+        {
+            this.Title = title;
+            this.Toggle = false;
+        }
+    }
+
     public class Menu : MonoBehaviour
     {
         Vector3 worldPosition;
