@@ -1,5 +1,6 @@
-using FMenu.Utils;
+﻿using FMenu.Utils;
 using System;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
@@ -48,6 +49,7 @@ namespace FMenu.UI
 
         private bool GuiEnabled = true;
 
+        MenuSettings settings = new MenuSettings();
 
         MenuItem MovementMenu = new MenuItem("> Movement");
         MenuItem FireworkspawnMenu = new MenuItem("> Spawn Special Fireworks");
