@@ -48,20 +48,12 @@ namespace FMenu.UI
 
         private bool GuiEnabled = true;
 
-        //private string SpeedTitle = "Speed";
-        public bool SpeedToggle;
 
-        private string SpawnFireworkTitle = "> Spawn Special Fireworks";
-        public bool SpawnFireworkToggle;
-
-        private string SpawnTimTitle = "Tim";
-
-        private string BuildmenuTitle = "> Build Menu";
-        public bool BuildmenuToggle;
-
-        private string AboutTitle = "> About FMenu";
-        public bool AboutToggle;
-
+        MenuItem MovementMenu = new MenuItem("> Movement");
+        MenuItem FireworkspawnMenu = new MenuItem("> Spawn Special Fireworks");
+        MenuItem BuildmenuMenu = new MenuItem("> Build Menu");
+        MenuItem SettingsMenu = new MenuItem("> Settings");
+        MenuItem AboutMenu = new MenuItem("> About FMenu");
 
         /// <summary>
         /// Selected build item
