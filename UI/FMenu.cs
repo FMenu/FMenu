@@ -63,12 +63,15 @@ namespace FMenu.UI
         public string BuildObject;
         public Transform objectToMove;
 
-
         private FireworkRespawner _Spawnfireworks;
         private MethodInfo spawnFireworksRaw = null;
 
+        private VersionLabel _Version;
+        private TMPro.TextMeshProUGUI versionRaw = null;
+
         private int GetY(int n)
         { return 90 + n * 30; }
+
         private void Start()
         {
             MainWindow = new Rect(20f, 50f, 200f, 300f);
@@ -97,7 +100,18 @@ namespace FMenu.UI
                     spawnFireworksRaw = _Spawnfireworks.GetType().GetMethod("RespawnFirework", BindingFlags.Default | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                 }
             }
-            ///////////////////////
+
+            /// Custom version
+            if (_Version == null)
+            {
+                _Version = FindObjectOfType<VersionLabel>();
+                if (_Version != null && versionRaw == null)
+                {
+                    versionRaw = _Version.GetComponent<TMPro.TextMeshProUGUI>();
+                    versionRaw.text = "FMenu Loader v" + settings.MenuVersion + " | v" + Application.version;
+                }
+            }
+
 
             Vector3 mouse = Input.mousePosition;
             Ray castPoint = Camera.main.ScreenPointToRay(mouse);
@@ -150,7 +164,6 @@ namespace FMenu.UI
                         break;
                 }
             }
-            ////////////////////////////
         }
 
         private void OnGUI()
