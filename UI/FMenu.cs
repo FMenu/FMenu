@@ -158,38 +158,59 @@ namespace FMenu.UI
 
             GUI.Box(MainWindow, "FMenu");
 
-            //if (GUI.Button(new Rect(25, GetY(0), 190, 30), SpeedTitle + (SpeedToggle ? " <color=green>ON</color>" : " <color=red>OFF</color>")))
-            //    SpeedToggle = !SpeedToggle;
-
-            if (GUI.Button(new Rect(25f, (float)GetY(1), 190f, 30f), SpawnFireworkTitle))
+            if (GUI.Button(new Rect(25f, (float)GetY(0), 190f, 30f), MovementMenu.Title))
             {
-                SpawnFireworkToggle = !SpawnFireworkToggle;
-                AboutToggle = false;
-                BuildmenuToggle = false;
+                MovementMenu.Toggle = !MovementMenu.Toggle;
+                FireworkspawnMenu.Toggle = false;
+                BuildmenuMenu.Toggle = false;
+                SettingsMenu.Toggle = false;
+                AboutMenu.Toggle = false;
             }
 
-            if (GUI.Button(new Rect(25, GetY(2), 190, 30), BuildmenuTitle))
+            if (GUI.Button(new Rect(25f, (float)GetY(1), 190f, 30f), FireworkspawnMenu.Title))
             {
-                BuildmenuToggle = !BuildmenuToggle;
-                AboutToggle = false;
-                SpawnFireworkToggle = false;
+                MovementMenu.Toggle = false;
+                FireworkspawnMenu.Toggle = !FireworkspawnMenu.Toggle;
+                BuildmenuMenu.Toggle = false;
+                SettingsMenu.Toggle = false;
+                AboutMenu.Toggle = false;
             }
 
-            if (GUI.Button(new Rect(25, GetY(4), 190, 30), AboutTitle))
+            if (GUI.Button(new Rect(25, GetY(2), 190, 30), BuildmenuMenu.Title))
             {
-                AboutToggle = !AboutToggle;
-                SpawnFireworkToggle = false;
-                BuildmenuToggle = false;
+                MovementMenu.Toggle = false;
+                FireworkspawnMenu.Toggle = false;
+                BuildmenuMenu.Toggle = !BuildmenuMenu.Toggle;
+                SettingsMenu.Toggle = false;
+                AboutMenu.Toggle = false;
             }
 
-            if (SpawnFireworkToggle)
+            if (GUI.Button(new Rect(25, GetY(5), 190, 30), SettingsMenu.Title))
+            {
+                MovementMenu.Toggle = false;
+                FireworkspawnMenu.Toggle = false;
+                BuildmenuMenu.Toggle = false;
+                SettingsMenu.Toggle = !SettingsMenu.Toggle;
+                AboutMenu.Toggle = false;
+            }
+
+            if (GUI.Button(new Rect(25, GetY(6), 190, 30), AboutMenu.Title))
+            {
+                MovementMenu.Toggle = false;
+                FireworkspawnMenu.Toggle = false;
+                BuildmenuMenu.Toggle = false;
+                SettingsMenu.Toggle = false;
+                AboutMenu.Toggle = !AboutMenu.Toggle;
+            }
+
+            if (FireworkspawnMenu.Toggle)
             {
                 GUI.Box(SubmenuWindow, "Spawn Special Fireworks");
-                if (GUI.Button(new Rect(235f, (float)GetY(0), 190f, 30f), SpawnTimTitle))
+                if (GUI.Button(new Rect(235f, (float)GetY(0), 190f, 30f), "Tim"))
                     spawnFireworksRaw.Invoke(_Spawnfireworks, null);
             }
 
-            if (BuildmenuToggle)
+            if (BuildmenuMenu.Toggle)
             {
 
                 GUI.Box(SubmenuWindow, "Build Menu");
