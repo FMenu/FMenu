@@ -72,7 +72,7 @@ namespace FMenu.UI
         private void Start()
         {
             MainWindow = new Rect(20f, 50f, 200f, 300f);
-            SubmenuWindow = new Rect(230f, 50f, 200f, 230f);
+            SubmenuWindow = new Rect(230f, 50f, 200f, 300f);
         }
 
         private void Update()
