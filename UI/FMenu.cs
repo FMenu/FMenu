@@ -224,10 +224,25 @@ namespace FMenu.UI
                 if (GUI.Button(new Rect(235f, (float)GetY(5), 190f, 30f), "Cylinder")) BuildObject = "Cylinder";
             }
 
-            if (AboutToggle)
+            if (SettingsMenu.Toggle)
             {
+                GUI.Box(SubmenuWindow, "Settings");
+
+            }
+
+            if (AboutMenu.Toggle)
+            {
+                string DeveloperString = "";
+                string BetaTestersString = "";
+
+                foreach ( string developer in settings.Developers)
+                    DeveloperString += $"• {developer}\n";
+
+                foreach ( string betatester in settings.BetaTesters)
+                    BetaTestersString += $"• {betatester}\n";
+
                 GUI.Box(SubmenuWindow, "About");
-                GUI.Label(new Rect(235, 70, 200, 300), "Made By:\n• Daanbreur\n• Subzay\n• StuX\n\nTesters:\n• RapierXbox\n• Lautnix\n\nVersion: v0.1.0");
+                GUI.Label(new Rect(235, 70, 200, 300), $"Developers:\n{DeveloperString}\nBeta-Testers:\n{BetaTestersString}\nVersion: v{settings.MenuVersion}");
             }
 
         }
