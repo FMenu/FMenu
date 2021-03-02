@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -14,6 +15,7 @@ namespace FMenu.UI
         public string MenuVersion { get; set; }
         public string[] Developers { get; set; }
         public string[] BetaTesters { get; set; }
+        public string[] AvailableLanguages { get; set; }
 
         public MenuSettings()
         {
@@ -21,6 +23,7 @@ namespace FMenu.UI
             this.MenuVersion = "0.1.7";
             this.Developers = new string[3] { "Daanbreur", "Subzay", "StuX" };
             this.BetaTesters = new string[3] { "RapierXbox", "Lautnix", "Keltusar" };
+            this.AvailableLanguages = new string[3] { "en-US", "nl-NL", "de-DE" };
         }
     }
 
@@ -48,6 +51,7 @@ namespace FMenu.UI
         private Rect SubmenuWindow;
 
         private bool GuiEnabled = true;
+        string languageInput = "";
 
         MenuSettings settings = new MenuSettings();
 
@@ -71,6 +75,11 @@ namespace FMenu.UI
 
         private int GetY(int n)
         { return 90 + n * 30; }
+
+        private bool IsValidLanguage(string language)
+        {
+            return settings.AvailableLanguages.Any(x => x == language);
+        }
 
         private void Start()
         {
@@ -242,6 +251,11 @@ namespace FMenu.UI
             if (SettingsMenu.Toggle)
             {
                 GUI.Box(SubmenuWindow, "Settings");
+
+                GUI.Label(new Rect(235f, (float)GetY(0), 190f, 30f), "Language: ");
+                languageInput = GUI.TextField(new Rect(235f, (float)GetY(1), 190f, 30f), languageInput, 15);
+
+                
 
             }
 
