@@ -51,7 +51,6 @@ namespace FMenu.UI
         private Rect SubmenuWindow;
 
         private bool GuiEnabled = true;
-        string languageInput = "";
 
         MenuSettings settings = new MenuSettings();
 
@@ -60,6 +59,8 @@ namespace FMenu.UI
         MenuItem BuildmenuMenu = new MenuItem("> Build Menu");
         MenuItem SettingsMenu = new MenuItem("> Settings");
         MenuItem AboutMenu = new MenuItem("> About FMenu");
+
+        Dropdown languageDropdown;
 
         /// <summary>
         /// Selected build item
@@ -76,15 +77,11 @@ namespace FMenu.UI
         private int GetY(int n)
         { return 90 + n * 30; }
 
-        private bool IsValidLanguage(string language)
-        {
-            return settings.AvailableLanguages.Any(x => x == language);
-        }
-
         private void Start()
         {
             MainWindow = new Rect(20f, 50f, 200f, 300f);
             SubmenuWindow = new Rect(230f, 50f, 200f, 300f);
+            languageDropdown = new Dropdown(new Rect(235f, (float)GetY(0), 190f, 60f), settings.AvailableLanguages, "Current Language");
         }
 
         private void Update()
@@ -252,8 +249,9 @@ namespace FMenu.UI
             {
                 GUI.Box(SubmenuWindow, "Settings");
 
-                GUI.Label(new Rect(235f, (float)GetY(0), 190f, 30f), "Language: ");
-                languageInput = GUI.TextField(new Rect(235f, (float)GetY(1), 190f, 30f), languageInput, 15);
+                /// GUI.Label(new Rect(235f, (float)GetY(0), 190f, 30f), "Language: ");
+                /// languageInput = GUI.TextField(new Rect(235f, (float)GetY(1), 190f, 30f), languageInput, 15);
+                languageDropdown.Draw();
 
                 
 
