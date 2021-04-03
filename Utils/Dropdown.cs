@@ -15,7 +15,7 @@ namespace FMenu.Utils
         private string[] options { get; set; }
 
         private bool expanded = false;
-        int currentlySelectedIndex = 0;
+        public int currentlySelectedIndex = 0;
 
         public Dropdown(Rect position, string[] options)
         {
@@ -28,7 +28,7 @@ namespace FMenu.Utils
         {
             this.dropdownLocation = position;
             this.options = options;
-            this.dropdownTitle = dropdownTitle;
+            this.dropdownTitle = title;
         }
 
         public void Draw()

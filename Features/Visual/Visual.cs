@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Menu.Features.Position
+namespace FMenu.Features.Position
 {
     public class Visual
     {

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\ILMerge.3.0.29\build\ILMerge.props" Condition="Exists('packages\ILMerge.3.0.29\build\ILMerge.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -7,11 +8,13 @@
     <ProjectGuid>{13940F58-B62C-4E16-AFF4-28D32536DBB5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Menu</RootNamespace>
+    <RootNamespace>FMenu</RootNamespace>
     <AssemblyName>FMenu</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -278,14 +281,55 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extentions.cs" />
     <Compile Include="Features\Misc\Misc.cs" />
     <Compile Include="Features\Visual\Visual.cs" />
     <Compile Include="Loader.cs" />
+    <Compile Include="Modules\VersionLabelMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\FMenu.cs" />
     <Compile Include="Utils\Dropdown.cs" />
+    <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\Render.cs" />
     <Compile Include="Utils\Settings.cs" />
+    <Compile Include="Utils\Timer.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\strings.bg.resx" />
+    <EmbeddedResource Include="Properties\strings.cs.resx" />
+    <EmbeddedResource Include="Properties\strings.da.resx" />
+    <EmbeddedResource Include="Properties\strings.de.resx" />
+    <EmbeddedResource Include="Properties\strings.es.resx" />
+    <EmbeddedResource Include="Properties\strings.fr.resx" />
+    <EmbeddedResource Include="Properties\strings.it.resx" />
+    <EmbeddedResource Include="Properties\strings.ja.resx" />
+    <EmbeddedResource Include="Properties\strings.nl.resx" />
+    <EmbeddedResource Include="Properties\strings.no.resx" />
+    <EmbeddedResource Include="Properties\strings.pl.resx" />
+    <EmbeddedResource Include="Properties\strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>strings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\strings.ru.resx" />
+    <EmbeddedResource Include="Properties\strings.tr.resx" />
+    <EmbeddedResource Include="Properties\strings.vi.resx" />
+    <EmbeddedResource Include="Properties\strings.zh.resx" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\ILMerge.3.0.29\build\ILMerge.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ILMerge.3.0.29\build\ILMerge.props'))" />
+  </Target>
 </Project>

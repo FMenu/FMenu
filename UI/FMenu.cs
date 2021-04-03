@@ -1,30 +1,50 @@
 ﻿using FMenu.Utils;
+using Microsoft.Win32;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Linq;
+using System.Threading;
+using FMenu.Modules;
+using FMenu.Properties;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using Logger = FMenu.Utils.Logger;
 
 namespace FMenu.UI
 {
-    class MenuSettings {
+    public class MenuSettings {
+
+        private RegistryKey settingsRegistry;
+
         public string LanguageSelected { get; set; }
         public string MenuVersion { get; set; }
+        public string GameVersion { get; set; }
         public string[] Developers { get; set; }
         public string[] BetaTesters { get; set; }
         public string[] AvailableLanguages { get; set; }
 
         public MenuSettings()
         {
-            this.LanguageSelected = "en-US";
+            this.settingsRegistry = Registry.CurrentUser.OpenSubKey("Software\\FMenu\\Settings", true);
+
             this.MenuVersion = "0.1.7";
             this.Developers = new string[3] { "Daanbreur", "Subzay", "StuX" };
             this.BetaTesters = new string[3] { "RapierXbox", "Lautnix", "Keltusar" };
-            this.AvailableLanguages = new string[3] { "en-US", "nl-NL", "de-DE" };
+            this.AvailableLanguages = new string[3] { "en-US", "de-DE", "es-ES" };
         }
+
+        public void Update()
+        {
+        }
+
+        public void Load()
+        {
+        }
+
     }
 
     class MenuItem
@@ -45,6 +65,8 @@ namespace FMenu.UI
 
     public class Menu : MonoBehaviour
     {
+        public static Logger logger = new Logger();
+
         Vector3 worldPosition;
 
         private Rect MainWindow;
@@ -52,27 +74,29 @@ namespace FMenu.UI
 
         private bool GuiEnabled = true;
 
-        MenuSettings settings = new MenuSettings();
+        MenuSettings settings;
 
-        MenuItem MovementMenu = new MenuItem("> Movement");
-        MenuItem FireworkspawnMenu = new MenuItem("> Spawn Special Fireworks");
-        MenuItem BuildmenuMenu = new MenuItem("> Build Menu");
-        MenuItem SettingsMenu = new MenuItem("> Settings");
-        MenuItem AboutMenu = new MenuItem("> About FMenu");
+        MenuItem MovementMenu = new MenuItem($"> {strings.movement}");
+        MenuItem ModsMenu = new MenuItem($"> {strings.mods}");
+        MenuItem FireworkspawnMenu = new MenuItem($"> {strings.fireworksspawn}");
+        MenuItem BuildmenuMenu = new MenuItem($"> {strings.buildmenu}");
+        MenuItem SettingsMenu = new MenuItem($"> {strings.settings}");
+        MenuItem AboutMenu = new MenuItem($"> {strings.about}");
 
         Dropdown languageDropdown;
+        private VersionLabelMod versionLabelMod;
 
-        /// <summary>
-        /// Selected build item
-        /// </summary>
         public string BuildObject;
         public Transform objectToMove;
 
         private FireworkRespawner _Spawnfireworks;
         private MethodInfo spawnFireworksRaw = null;
 
-        private VersionLabel _Version;
-        private TMPro.TextMeshProUGUI versionRaw = null;
+        //private VersionLabel _Version;
+        //private TMPro.TextMeshProUGUI _versionRaw = null;
+
+        private string DeveloperString = "";
+        private string BetaTestersString = "";
 
         private int GetY(int n)
         { return 90 + n * 30; }
@@ -81,13 +105,26 @@ namespace FMenu.UI
         {
             MainWindow = new Rect(20f, 50f, 200f, 300f);
             SubmenuWindow = new Rect(230f, 50f, 200f, 300f);
+
+            settings = new MenuSettings();
+            settings.GameVersion = Application.version;
+
+            foreach (string developer in settings.Developers) DeveloperString += $"• {developer}\n";
+            foreach (string betatester in settings.BetaTesters) BetaTestersString += $"• {betatester}\n";
+
             languageDropdown = new Dropdown(new Rect(235f, (float)GetY(0), 190f, 60f), settings.AvailableLanguages, "Current Language");
+            versionLabelMod = new VersionLabelMod();
         }
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Insert))
+            {
                 GuiEnabled = !GuiEnabled;
+                Cursor.lockState = !GuiEnabled ? CursorLockMode.Locked : CursorLockMode.None;
+                Cursor.visible = GuiEnabled;
+            }
+                
 
             if (Input.GetKeyDown(KeyCode.Delete))
                 Loader.Unload();
@@ -108,15 +145,8 @@ namespace FMenu.UI
             }
 
             /// Custom version
-            if (_Version == null)
-            {
-                _Version = FindObjectOfType<VersionLabel>();
-                if (_Version != null && versionRaw == null)
-                {
-                    versionRaw = _Version.GetComponent<TMPro.TextMeshProUGUI>();
-                    versionRaw.text = "FMenu Loader v" + settings.MenuVersion + " | v" + Application.version;
-                }
-            }
+            versionLabelMod.Update(settings);
+
 
 
             Vector3 mouse = Input.mousePosition;
@@ -182,24 +212,37 @@ namespace FMenu.UI
             if (GUI.Button(new Rect(25f, (float)GetY(0), 190f, 30f), MovementMenu.Title))
             {
                 MovementMenu.Toggle = !MovementMenu.Toggle;
+                ModsMenu.Toggle = false;
                 FireworkspawnMenu.Toggle = false;
                 BuildmenuMenu.Toggle = false;
                 SettingsMenu.Toggle = false;
                 AboutMenu.Toggle = false;
             }
 
-            if (GUI.Button(new Rect(25f, (float)GetY(1), 190f, 30f), FireworkspawnMenu.Title))
+            if (GUI.Button(new Rect(25f, (float)GetY(1), 190f, 30f), ModsMenu.Title))
             {
                 MovementMenu.Toggle = false;
+                ModsMenu.Toggle = !ModsMenu.Toggle;
+                FireworkspawnMenu.Toggle = false;
+                BuildmenuMenu.Toggle = false;
+                SettingsMenu.Toggle = false;
+                AboutMenu.Toggle = false;
+            }
+
+            if (GUI.Button(new Rect(25f, (float)GetY(2), 190f, 30f), FireworkspawnMenu.Title))
+            {
+                MovementMenu.Toggle = false;
+                ModsMenu.Toggle = false;
                 FireworkspawnMenu.Toggle = !FireworkspawnMenu.Toggle;
                 BuildmenuMenu.Toggle = false;
                 SettingsMenu.Toggle = false;
                 AboutMenu.Toggle = false;
             }
 
-            if (GUI.Button(new Rect(25, GetY(2), 190, 30), BuildmenuMenu.Title))
+            if (GUI.Button(new Rect(25, GetY(3), 190, 30), BuildmenuMenu.Title))
             {
                 MovementMenu.Toggle = false;
+                ModsMenu.Toggle = false;
                 FireworkspawnMenu.Toggle = false;
                 BuildmenuMenu.Toggle = !BuildmenuMenu.Toggle;
                 SettingsMenu.Toggle = false;
@@ -209,6 +252,7 @@ namespace FMenu.UI
             if (GUI.Button(new Rect(25, GetY(5), 190, 30), SettingsMenu.Title))
             {
                 MovementMenu.Toggle = false;
+                ModsMenu.Toggle = false;
                 FireworkspawnMenu.Toggle = false;
                 BuildmenuMenu.Toggle = false;
                 SettingsMenu.Toggle = !SettingsMenu.Toggle;
@@ -218,15 +262,23 @@ namespace FMenu.UI
             if (GUI.Button(new Rect(25, GetY(6), 190, 30), AboutMenu.Title))
             {
                 MovementMenu.Toggle = false;
+                ModsMenu.Toggle = false;
                 FireworkspawnMenu.Toggle = false;
                 BuildmenuMenu.Toggle = false;
                 SettingsMenu.Toggle = false;
                 AboutMenu.Toggle = !AboutMenu.Toggle;
             }
 
+            if (MovementMenu.Toggle)
+            {
+                GUI.Box(SubmenuWindow, "Movement");
+                GUI.Label(new Rect(235f, (float)GetY(0), 190f, 30f), "In development");
+                //if (GUI.Button(new Rect(235f, (float)GetY(0), 190f, 30f), "Flyhacks"))
+            }
+
             if (FireworkspawnMenu.Toggle)
             {
-                GUI.Box(SubmenuWindow, "Spawn Special Fireworks");
+                GUI.Box(SubmenuWindow, $"{strings.fireworksspawn_header}");
                 if (GUI.Button(new Rect(235f, (float)GetY(0), 190f, 30f), "Tim"))
                     spawnFireworksRaw.Invoke(_Spawnfireworks, null);
             }
@@ -234,42 +286,33 @@ namespace FMenu.UI
             if (BuildmenuMenu.Toggle)
             {
 
-                GUI.Box(SubmenuWindow, "Build Menu");
-                GUI.Label(new Rect(235, 70, 200, 300), "Select an object and press X");
-                GUI.Label(new Rect(235, 85, 200, 300), "Selected object: " + BuildObject);
+                GUI.Box(SubmenuWindow, $"{strings.buildmenu_header}");
+                GUI.Label(new Rect(235, 70, 200, 300), $"{strings.buildmenu_text1}");
+                GUI.Label(new Rect(235, 85, 200, 300), $"{strings.buildmenu_text2} {BuildObject}");
 
-                if (GUI.Button(new Rect(235f, (float)GetY(1), 190f, 30f), "Cube")) BuildObject = "Cube";
-                if (GUI.Button(new Rect(235f, (float)GetY(2), 190f, 30f), "Plane")) BuildObject = "Plane";
-                if (GUI.Button(new Rect(235f, (float)GetY(3), 190f, 30f), "Sphere")) BuildObject = "Sphere";
-                if (GUI.Button(new Rect(235f, (float)GetY(4), 190f, 30f), "Capsule")) BuildObject = "Capsule";
-                if (GUI.Button(new Rect(235f, (float)GetY(5), 190f, 30f), "Cylinder")) BuildObject = "Cylinder";
+                if (GUI.Button(new Rect(235f, (float)GetY(1), 190f, 30f), $"{strings.buildmenu_cube}")) BuildObject = "Cube";
+                if (GUI.Button(new Rect(235f, (float)GetY(2), 190f, 30f), $"{strings.buildmenu_plane}")) BuildObject = "Plane";
+                if (GUI.Button(new Rect(235f, (float)GetY(3), 190f, 30f), $"{strings.buildmenu_sphere}")) BuildObject = "Sphere";
+                if (GUI.Button(new Rect(235f, (float)GetY(4), 190f, 30f), $"{strings.buildmenu_capsule}")) BuildObject = "Capsule";
+                if (GUI.Button(new Rect(235f, (float)GetY(5), 190f, 30f), $"{strings.buildmenu_cylinder}")) BuildObject = "Cylinder";
             }
 
             if (SettingsMenu.Toggle)
             {
                 GUI.Box(SubmenuWindow, "Settings");
 
-                /// GUI.Label(new Rect(235f, (float)GetY(0), 190f, 30f), "Language: ");
-                /// languageInput = GUI.TextField(new Rect(235f, (float)GetY(1), 190f, 30f), languageInput, 15);
                 languageDropdown.Draw();
+                //logger.log($"Selected Index: {languageDropdown.currentlySelectedIndex} | Option in array: {settings.AvailableLanguages[languageDropdown.currentlySelectedIndex]}");
+                settings.LanguageSelected = settings.AvailableLanguages[languageDropdown.currentlySelectedIndex];
+                //settings.Update();
 
-                
-
+                versionLabelMod.RainbowEnabled = GUI.Toggle(new Rect(235f, (float)GetY(3), 190f, 30f), versionLabelMod.RainbowEnabled, "Rainbow Version Label");
             }
 
             if (AboutMenu.Toggle)
             {
-                string DeveloperString = "";
-                string BetaTestersString = "";
-
-                foreach ( string developer in settings.Developers)
-                    DeveloperString += $"• {developer}\n";
-
-                foreach ( string betatester in settings.BetaTesters)
-                    BetaTestersString += $"• {betatester}\n";
-
                 GUI.Box(SubmenuWindow, "About");
-                GUI.Label(new Rect(235, 70, 200, 300), $"Developers:\n{DeveloperString}\nBeta-Testers:\n{BetaTestersString}\nVersion: v{settings.MenuVersion}");
+                GUI.Label(new Rect(235, 70, 200, 300), $"{strings.about_developers}:\n{DeveloperString}\n{strings.about_testers}:\n{BetaTestersString}\n{strings.about_version}: v{settings.MenuVersion}");
             }
 
         }

@@ -8,7 +8,7 @@ namespace FMenu
 
         public static void Init()
         {
-            Debug.Log("-- FMenu --");
+            Debug.Log("Loading FMenu");
             Application.runInBackground = true;
             Loader.Load = new GameObject("FMenu");
             Loader.Load.transform.parent = null;

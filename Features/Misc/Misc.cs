@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Menu.Features.Misc
+namespace FMenu.Features.Misc
 {
     public class Misc
     {
