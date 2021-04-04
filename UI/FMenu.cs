@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace FMenu.UI
 {
@@ -16,7 +17,7 @@ namespace FMenu.UI
 
         private bool GuiEnabled = true;
 
-        private string SpeedTitle = "Speed";
+        //private string SpeedTitle = "Speed";
         public bool SpeedToggle;
 
         private string SpawnFireworkTitle = "> Spawn Special Fireworks";
@@ -24,8 +25,19 @@ namespace FMenu.UI
 
         private string SpawnTimTitle = "Tim";
 
+        private string BuildmenuTitle = "> Build Menu";
+        public bool BuildmenuToggle;
+
         private string AboutTitle = "> About FMenu";
         public bool AboutToggle;
+
+
+        /// <summary>
+        /// Selected build item
+        /// </summary>
+        public string BuildObject;
+        public Transform objectToMove;
+
 
         private FireworkRespawner _Spawnfireworks;
         private MethodInfo spawnFireworksRaw = null;
@@ -35,7 +47,7 @@ namespace FMenu.UI
         private void Start()
         {
             MainWindow = new Rect(20f, 50f, 200f, 300f);
-            SubmenuWindow = new Rect(230f, 50f, 200f, 200f);
+            SubmenuWindow = new Rect(230f, 50f, 200f, 230f);
         }
 
         private void Update()
@@ -50,6 +62,8 @@ namespace FMenu.UI
             mousePos.z = Camera.main.nearClipPlane;
             worldPosition = Camera.main.ScreenToWorldPoint(mousePos);
 
+
+            /// Tim spawn function
             if (_Spawnfireworks == null)
             {
                 _Spawnfireworks = FindObjectOfType<FireworkRespawner>();
@@ -58,6 +72,60 @@ namespace FMenu.UI
                     spawnFireworksRaw = _Spawnfireworks.GetType().GetMethod("RespawnFirework", BindingFlags.Default | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                 }
             }
+            ///////////////////////
+
+            Vector3 mouse = Input.mousePosition;
+            Ray castPoint = Camera.main.ScreenPointToRay(mouse);
+            RaycastHit hit;
+
+            /// Default Unity object spawner 
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                switch (BuildObject)
+                {
+                    case "Cube":
+
+                        if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+                        {
+                            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            cube.transform.position = hit.point;
+                        }
+
+                        break;
+                    case "Plane":
+
+                        if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+                        {
+                            GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                            plane.transform.position = hit.point;
+                        }
+                        break;
+                    case "Sphere":
+
+                        if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+                        {
+                            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                            sphere.transform.position = hit.point;
+                        }
+                        break;
+                    case "Capsule":
+
+                        if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+                        {
+                            GameObject capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                            capsule.transform.position = hit.point;
+                        }
+                        break;
+                    case "Cylinder":
+                        if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+                        {
+                            GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                            cylinder.transform.position = hit.point;
+                        }
+                        break;
+                }
+            }
+            ////////////////////////////
         }
 
         private void OnGUI()
@@ -74,12 +142,21 @@ namespace FMenu.UI
             {
                 SpawnFireworkToggle = !SpawnFireworkToggle;
                 AboutToggle = false;
+                BuildmenuToggle = false;
+            }
+
+            if (GUI.Button(new Rect(25, GetY(2), 190, 30), BuildmenuTitle))
+            {
+                BuildmenuToggle = !BuildmenuToggle;
+                AboutToggle = false;
+                SpawnFireworkToggle = false;
             }
 
             if (GUI.Button(new Rect(25, GetY(4), 190, 30), AboutTitle))
             {
                 AboutToggle = !AboutToggle;
                 SpawnFireworkToggle = false;
+                BuildmenuToggle = false;
             }
 
             if (SpawnFireworkToggle)
@@ -87,6 +164,35 @@ namespace FMenu.UI
                 GUI.Box(SubmenuWindow, "Spawn Special Fireworks");
                 if (GUI.Button(new Rect(235f, (float)GetY(0), 190f, 30f), SpawnTimTitle))
                     spawnFireworksRaw.Invoke(_Spawnfireworks, null);
+            }
+
+            if (BuildmenuToggle)
+            {
+
+                GUI.Box(SubmenuWindow, "Build Menu");
+                GUI.Label(new Rect(235, 70, 200, 300), "Select an object and press X");
+                GUI.Label(new Rect(235, 85, 200, 300), "Selected object: " + BuildObject);
+
+                if (GUI.Button(new Rect(235f, (float)GetY(1), 190f, 30f), "Cube"))
+                {
+                    BuildObject = "Cube";
+                }
+                if (GUI.Button(new Rect(235f, (float)GetY(2), 190f, 30f), "Plane"))
+                {
+                    BuildObject = "Plane";
+                }
+                if (GUI.Button(new Rect(235f, (float)GetY(3), 190f, 30f), "Sphere"))
+                {
+                    BuildObject = "Sphere";
+                }
+                if (GUI.Button(new Rect(235f, (float)GetY(4), 190f, 30f), "Capsule"))
+                {
+                    BuildObject = "Capsule";
+                }
+                if (GUI.Button(new Rect(235f, (float)GetY(5), 190f, 30f), "Cylinder"))
+                {
+                    BuildObject = "Cylinder";
+                }
             }
 
             if (AboutToggle)
