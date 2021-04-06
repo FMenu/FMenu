@@ -295,6 +295,7 @@
     <Compile Include="UI\FMenu.cs" />
     <Compile Include="Utils\Dropdown.cs" />
     <Compile Include="Utils\Logger.cs" />
+    <Compile Include="Utils\Mouse.cs" />
     <Compile Include="Utils\Render.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\Timer.cs" />
