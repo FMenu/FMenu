@@ -84,7 +84,10 @@ namespace FMenu.UI
         MenuItem AboutMenu = new MenuItem($"> {strings.about}");
 
         Dropdown languageDropdown;
+
         private VersionLabelMod versionLabelMod;
+        private AutoclickerMod autoclickerMod;
+
 
         public string BuildObject;
         public Transform objectToMove;
@@ -114,6 +117,7 @@ namespace FMenu.UI
 
             languageDropdown = new Dropdown(new Rect(235f, (float)GetY(0), 190f, 60f), settings.AvailableLanguages, "Current Language");
             versionLabelMod = new VersionLabelMod();
+            autoclickerMod = new AutoclickerMod();
         }
 
         private void Update()
@@ -146,7 +150,7 @@ namespace FMenu.UI
 
             /// Custom version
             versionLabelMod.Update(settings);
-
+            autoclickerMod.Update();
 
 
             Vector3 mouse = Input.mousePosition;
@@ -274,6 +278,28 @@ namespace FMenu.UI
                 GUI.Box(SubmenuWindow, "Movement");
                 GUI.Label(new Rect(235f, (float)GetY(0), 190f, 30f), "In development");
                 //if (GUI.Button(new Rect(235f, (float)GetY(0), 190f, 30f), "Flyhacks"))
+            }
+
+            if (ModsMenu.Toggle)
+            {
+                GUI.Box(SubmenuWindow, $"{strings.mods_header}");
+                if (GUI.Button(new Rect(235f, (float) GetY(0), 190f, 30f), "Autoclicker" + (autoclickerMod.Active ? "Enabled" : "Disabled")))
+                {
+                    autoclickerMod.Active = !autoclickerMod.Active;
+                }
+
+                if (GUI.Button(new Rect(235f, (float)GetY(1), 190f / 2, 30f), autoclickerMod.LeftActive ? "<color=green>Left</color>" : "Left"))
+                {
+                    autoclickerMod.LeftActive = !autoclickerMod.LeftActive;
+                    autoclickerMod.RightActive = false;
+                }
+
+                if (GUI.Button(new Rect(235f + (190f / 2), (float) GetY(1), 190f / 2, 30f), autoclickerMod.RightActive ? "<color=green>Right</color>" : "Right"))
+                {
+                    autoclickerMod.RightActive = !autoclickerMod.RightActive;
+                    autoclickerMod.LeftActive = false;
+                }
+
             }
 
             if (FireworkspawnMenu.Toggle)
